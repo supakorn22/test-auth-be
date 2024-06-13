@@ -3,9 +3,12 @@ import jwt from 'jsonwebtoken';
 import User, { IUser, AuthenticatedRequest } from '../models/User';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+// import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 const SECRET_KEY = process.env.SECRET_KEY || 'your_secret_key'; // Replace with your secret key, ideally from an environment variable
+
+
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     const { username, password, role } = req.body;
@@ -39,10 +42,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
 
         res.cookie('token', token, {
-            maxAge: 360000, // 6 minutes
-            secure: false,
+            maxAge: 3600000, // 60 minutes
+            secure: true,
             httpOnly: true,
-            sameSite: 'strict',
+            sameSite: 'none',
             domain: 'localhost',
         });
 
@@ -52,13 +55,49 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+// export const loginProtect = async (req: Request, res: Response): Promise<void> => {
+//     const { username, password } = req.body;
+
+//     try {
+//         const user: IUser | null = await User.findOne({ username });
+//         if (!user || !(await bcrypt.compare(password, user.password))) {
+//             res.status(400).json({ error: 'Invalid username or password' });
+//             return;
+//         }
+
+//         const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+
+//         // Generate CSRF token
+//         const csrfToken = uuidv4();
+//         user.csrfToken = csrfToken;
+//         await user.save();
+
+//         res.cookie('token', token, {
+//             maxAge: 3600000, // 60 minutes
+//             secure: true,
+//             httpOnly: true,
+//             sameSite: 'lax',
+//             domain: 'localhost',
+//         });
+
+//         res.json({ message: 'Login successful', csrfToken });
+//     } catch (error) {
+//         res.status(500).json({ error: 'Error logging in' });
+//     }
+// };
+
+
 // Middleware to protect routes
 export const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: Function): void => {
     const token = req.cookies.token;
-    if (token == null) {
+    console.log(token);
+    if (token === null || token === undefined) {
+        console.log('Token is null or undefined');
         res.status(401).json({ error: 'Access denied. No token provided.' });
     }
 
+    else {
+    // console.log(token);
     try {
         const decoded = jwt.verify(token, SECRET_KEY) as jwt.JwtPayload;
         req.user = decoded; // Attach the decoded token to the request object
@@ -66,6 +105,7 @@ export const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: 
     } catch (error) {
         res.status(400).json({ error: 'Invalid token.' });
     }
+}
 };
 
 export const getUser = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
@@ -76,7 +116,6 @@ export const getUser = async (req: AuthenticatedRequest, res: Response): Promise
             res.status(404).json({ error: 'User not found' });
             return;
         }
-
         // Destructure the user object to separate the password from the rest of the user data
         const { password, ...userWithoutPassword } = user.toObject();
 
@@ -89,9 +128,11 @@ export const getUser = async (req: AuthenticatedRequest, res: Response): Promise
 
 export const logout = (req: Request, res: Response): void => {
     res.cookie('token', '', {
-        maxAge: 0,  // Expire the cookie immediately
-        secure: false,
-        httpOnly: true
+        maxAge: 3600000, // 60 minutes
+            secure: true,
+            httpOnly: true,
+            sameSite: 'none',
+            domain: 'localhost',
     });
     res.json({ message: 'Logged out successfully' });
 };

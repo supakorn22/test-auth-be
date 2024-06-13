@@ -1,10 +1,16 @@
 import express from 'express';
 import { register, login, getUser, authenticateJWT, logout, requireRole } from '../controllers/authController';
-
+import csurf from 'csurf';
 const router = express.Router();
+
+
+const csrfProtection = csurf({
+    cookie: true
+  });
 
 router.post('/register', register);
 router.post('/login', login);
+router.post('/loginProtect',csrfProtection, login);
 router.get('/me', authenticateJWT, getUser);
 router.get('/logout', logout);
 
