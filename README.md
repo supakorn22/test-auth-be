@@ -59,3 +59,15 @@ If you want to use HTTPS, follow these steps:
     mkcert -install
     mkcert localhost
 to use HTTPS use https://localhost8081 or you can config to any you want in .env `PORT_HTTPS`.
+
+
+# API Documentation
+
+## Endpoints
+
+| Method | Endpoint    | Description                        | Parameters                                                      | Response                       |
+|--------|-------------|------------------------------------|-----------------------------------------------------------------|-------------------------------|
+| POST   | /auth/register   | Register a new user                | { "username": "string", "password": "string", "email": "string", "role": "string" } | JSON object of created user    |
+| POST   | /auth/login      | Login a user                       | { "username": "string", "password": "string" }                   | JSON object with JWT token     |
+| GET    | /auth/me         | Get current user information       | None (JWT token in header)                                       | JSON object of the user        |
+| GET    | /auth/logout     | Logout the current user            | None                                                            | JSON object with logout status |

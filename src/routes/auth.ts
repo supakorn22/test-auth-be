@@ -10,7 +10,6 @@ const csrfProtection = csurf({
 
 router.post('/register', register);
 router.post('/login', login);
-router.post('/loginProtect',csrfProtection, login);
 router.get('/me', authenticateJWT, getUser);
 router.get('/logout', logout);
 
