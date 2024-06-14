@@ -58,4 +58,4 @@ If you want to use HTTPS, follow these steps:
     cd src
     mkcert -install
     mkcert localhost
-to use HTTPS use https://localhost8081
+to use HTTPS use https://localhost8081 or you can config to any you want in .env `PORT_HTTPS`.
