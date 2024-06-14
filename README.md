@@ -18,7 +18,7 @@ To set up the project after cloning it from Git, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/supakorn22/test-auth-be.git
    cd test-auth-be
    ```
 2. Create a .env file in the root of the project with the following content:
@@ -49,7 +49,7 @@ If you want to use HTTPS, follow these steps:
     ```bash
     choco install mkcert
     ```
-    On macOS, use brew:
+    - On macOS, use brew:
     ```bash
     brew install mkcert
     ```
