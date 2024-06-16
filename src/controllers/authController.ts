@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import * as jose from 'jose';
+import { V4 } from 'paseto';
 import User, { IUser, AuthenticatedRequest } from '../models/User';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 // import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
-const SECRET_KEY = new TextEncoder().encode(process.env.SECRET_KEY || 'your_secret_key'); // Replace with your secret key, ideally from an environment variable
+// const SECRET_KEY = new TextEncoder().encode(process.env.SECRET_KEY || 'your_secret_key'); // Replace with your secret key, ideally from an environment variable
+const SECRET_KEY_PUBLIC = process.env.V4_PUBLIC ?? 'error_public_key';
+const SECRET_KEY_SECRET = process.env.V4_SECRET ?? 'error_public_key';
 
 
 
@@ -39,10 +41,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        const token = await new jose.SignJWT({ id: user._id, role: user.role })
-            .setProtectedHeader({ alg: 'HS256' })
-            .setExpirationTime('1h')
-            .sign(SECRET_KEY);
+        const payload = { id: user._id, role: user.role, exp: new Date(Date.now() + (60 * 60 * 1000)).toISOString()  };
+        const token = await V4.sign(payload,SECRET_KEY_SECRET);
 
         res.cookie('token', token, {
             maxAge: 3600000, // 60 minutes
@@ -59,7 +59,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Middleware to protect routes
-export const authenticateJWT = async (req: AuthenticatedRequest, res: Response, next: Function): Promise<void> => {
+export const authenticatePaseto = async (req: AuthenticatedRequest, res: Response, next: Function): Promise<void> => {
     const token = req.cookies.token;
     if (token === null || token === undefined) {
         console.log('Token is null or undefined');
@@ -67,12 +67,15 @@ export const authenticateJWT = async (req: AuthenticatedRequest, res: Response, 
     }
 
     else {
+    console.log(token);
     try {
-        const { payload } = await jose.jwtVerify(token, SECRET_KEY);
+        const  payload  = await V4.verify(token, SECRET_KEY_PUBLIC);
         req.user = payload; // Attach the decoded token to the request object
+        console.log('Payload:', payload);
         next();
     } catch (error) {
-        res.status(400).json({ error: 'Invalid token.' });
+        console.error(error);
+        res.status(400).json({ error: 'Invalid token. +' });
     }
 }
 };
@@ -97,7 +100,7 @@ export const getUser = async (req: AuthenticatedRequest, res: Response): Promise
 
 export const logout = (req: Request, res: Response): void => {
     res.cookie('token', '', {
-        maxAge: 3600000, // 60 minutes
+        maxAge: 0, // Expire the cookie immediately
             secure: true,
             httpOnly: true,
             sameSite: 'strict',

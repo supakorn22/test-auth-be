@@ -32,6 +32,8 @@
     "jose": "^5.4.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "paseto": "^3.1.4",
+    "tweetnacl": "^1.0.3"
   }
 }
