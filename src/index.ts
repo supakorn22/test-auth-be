@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import mainRouter from './routes';
+import logIpMiddleware from './middleware/LogIpMiddleware';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import https from 'https';
@@ -52,6 +53,7 @@ app.use(cors(
   }
 
 ));
+app.use(logIpMiddleware);
 
 
 // MongoDB connection string

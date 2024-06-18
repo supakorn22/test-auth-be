@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getUser, authenticatePaseto, logout, requireRole } from '../controllers/authController';
+import { register, login, getUser, authenticatePaseto, logout, requireRole,refreshAccessToken } from '../controllers/authController';
 import csurf from 'csurf';
 const router = express.Router();
 
@@ -12,6 +12,7 @@ router.post('/register', register);
 router.post('/login', login);
 router.get('/me', authenticatePaseto, getUser);
 router.get('/logout', logout);
+router.post('/refresh-token',refreshAccessToken); 
 
 // Example of a protected route that only 'admin' can access
 router.get('/admin-only', authenticatePaseto, requireRole(['admin']), (req, res) => {
