@@ -17,9 +17,9 @@ function getRandomString(length: number) {
 // Function to generate payloads with random data
 function generateRandomPayloads() {
   return [
-    { userId: '12345', role: 'admin', data: getRandomString(100) }, // Small payload with random data
-    { userId: '12345', role: 'admin', data: getRandomString(1000) }, // Medium payload with random data
-    { userId: '12345', role: 'admin', data: getRandomString(10000) } // Large payload with random data
+    { userId: '12345', role: 'admin', data: getRandomString(10000) }, // Small payload with random data
+    // { userId: '12345', role: 'admin', data: getRandomString(1000) }, // Medium payload with random data
+    // { userId: '12345', role: 'admin', data: getRandomString(10000) } // Large payload with random data
   ];
 }
 
@@ -65,7 +65,7 @@ async function measureJoseJWT(payload: { userId: string; role: string; data: str
   for (let i = 0; i < NUM_ITERATIONS; i++) {
     // Measure sign time
     let startTime = performance.now();
-    const jwtToken = await jose.JWS.createSign({ format: 'compact', fields: { typ: 'JWT', alg: 'HS512' } }, key)
+    const jwtToken = await jose.JWS.createSign({ format: 'compact', fields: { typ: 'JWT', alg: 'HS256' } }, key)
       .update(JSON.stringify(payload))
       .final();
     let endTime = performance.now();
@@ -127,11 +127,11 @@ async function main() {
     for (const payload of payloads) {
       console.log(`Testing payload size: ${JSON.stringify(payload).length} bytes`);
       
-      const pasetoResults = await measurePasetoV4Public(payload);
-      console.log('PASETO v4 Public:');
-      console.log(`Mean sign time: ${pasetoResults.meanSignTime.toFixed(2)} ms`);
-      console.log(`Mean verify time: ${pasetoResults.meanVerifyTime.toFixed(2)} ms`);
-      console.log(`Mean token size: ${pasetoResults.meanTokenSize.toFixed(2)} bytes`);
+      // const pasetoResults = await measurePasetoV4Public(payload);
+      // console.log('PASETO v4 Public:');
+      // console.log(`Mean sign time: ${pasetoResults.meanSignTime.toFixed(2)} ms`);
+      // console.log(`Mean verify time: ${pasetoResults.meanVerifyTime.toFixed(2)} ms`);
+      // console.log(`Mean token size: ${pasetoResults.meanTokenSize.toFixed(2)} bytes`);
   
       const joseResults = await measureJoseJWT(payload);
       console.log('node-jose JWT (HS512):');
@@ -139,11 +139,11 @@ async function main() {
       console.log(`Mean verify time: ${joseResults.meanVerifyTime.toFixed(2)} ms`);
       console.log(`Mean token size: ${joseResults.meanTokenSize.toFixed(2)} bytes`);
   
-      const jweResults = await measureJoseJWE(payload);
-      console.log('node-jose JWE (RS256):');
-      console.log(`Mean encrypt time: ${jweResults.meanEncryptTime.toFixed(2)} ms`);
-      console.log(`Mean decrypt time: ${jweResults.meanDecryptTime.toFixed(2)} ms`);
-      console.log(`Mean token size: ${jweResults.meanTokenSize.toFixed(2)} bytes`);
+      // const jweResults = await measureJoseJWE(payload);
+      // console.log('node-jose JWE (RS256):');
+      // console.log(`Mean encrypt time: ${jweResults.meanEncryptTime.toFixed(2)} ms`);
+      // console.log(`Mean decrypt time: ${jweResults.meanDecryptTime.toFixed(2)} ms`);
+      // console.log(`Mean token size: ${jweResults.meanTokenSize.toFixed(2)} bytes`);
 
       console.log();
     }

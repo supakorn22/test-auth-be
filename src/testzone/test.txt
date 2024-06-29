@@ -1,0 +1,8 @@
+
+Plain Text Password: SuperSecretPassword123
+Encrypted Password: afebd80842004c447ccf5ddcfd6d0de0:254552e780146db63bb7e7fd68d552a62e58dd8a89a0
+Hashed Password: 70edea781091aea96d99d0a4887c3d5c140a0f09e6487451472a9b019c24cd30
+Hashed Password with Salt: 32b9792cf729a814ccfae49265ca696c3fda0b543b3b0b31e3a01b10923271dd
+Hashed Password with Auto Salt: $2b$10$9ZpJYTWRBVtFrJ0FlxSFPuq0wvE6BFdLz47Bjsv/SbMDedwcqgGp6
+Argon2 Hashed Password: $argon2id$v=19$m=65536,t=3,p=4$iwjSt8DKGMhZCV/t6/Tfow$8wBPXb7dlUFtRKro0/SBERt6VRBYksmNrxMumh2hXE4
+
