@@ -22,7 +22,7 @@ let httpsOptions = null;
 try {
   const keyPath = path.resolve('src/localhost-key.pem');
   const certPath = path.resolve('src/localhost.pem');
-  
+
   if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
     httpsOptions = {
       key: fs.readFileSync(keyPath),
@@ -48,7 +48,7 @@ app.use(logger('dev'));
 app.use(cookieParser());
 app.use(cors(
   {
-    origin: ['http://localhost:3000','https://localhost:3001','https://localhost:3000','http://localhost:3001','https://localhost:3002'],
+    origin: ['http://localhost:3000', 'https://localhost:3001', 'https://localhost:3000', 'http://localhost:3001', 'https://localhost:3002'],
     credentials: true
   }
 
@@ -67,6 +67,8 @@ mongoose.connect(mongoURI)
 
 
 
+
+
 app.use('/', mainRouter); // Use the main router
 
 
@@ -79,7 +81,7 @@ http.createServer(app).listen(port, () => {
 // Creating HTTPS server
 
 if (httpsOptions) {
-https.createServer(httpsOptions, app).listen(portHttps, () => {
-  console.log(`HTTPS server is running on https://localhost${portHttps}`, );
-});
+  https.createServer(httpsOptions, app).listen(portHttps, () => {
+    console.log(`HTTPS server is running on https://localhost:${portHttps}`,);
+  });
 }
